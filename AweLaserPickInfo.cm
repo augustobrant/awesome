@@ -34,57 +34,24 @@
    END OF CETSC
 */
 
-package custom.awesome.connectors;
+package custom.awesome;
 
-public class AweConnectorSet {
-    public constructor() { }
+public class AweLaserPickInfo {
+    private point source : public readable;
+    private point intersection : public readable;
+    private Object owner : public readable;
 
-    public AweConnectorCache connectorCache;
-    public bool selected = true;
-
-    extend public str name() {
-        return null;
+    public constructor(point source, PickIntersection3D pickIntersection) {
+        this.source = source;
+        this.owner = pickIntersection.owner;
+        this.intersection = pickIntersection.info.ipWC.point;
     }
 
-    extend public bool optional() {
-        return false;
+    extend public double distance() {
+        return this.source.distance(this.intersection);
     }
 
-    extend public bool active() {
-        return !this.optional() or this.selected;
-    }
-
-    extend public void connectors(AweConnectorCache cc) {
-    }
-
-    extend public bool connect(AweConnectEnv me, AweConnectEnv other) {
-        if(!magnetSetsAttract(me.connector.getMagnets(), other.connector.getMagnets())) return false;
-        return true;
-    }
-
-    extend public void connected(AweConnectEnv me, AweConnectEnv other) {
-
-    }
-
-    extend public void disconnected(AweConnectEnv me, AweConnectEnv other) {
-
-    }
-
-    extend public vector getDisplacementIfConnected(AweConnectEnv me, AweConnectEnv other) {
-        point oldPosition = me.snapper.pos();
-        point newPosition = me.snapper.positionIfConnected(me.connector, other.connector);
-
-        return newPosition - oldPosition;
-    }
-
-    extend public bool debug() {
-        return false;
-    }
-
-    extend public bool isAnyConnected(){
-        if (connectorCache != null) for (c in connectorCache.buffer) if (c.isConnected)
-            return true;
-
-        return false;
+    public str toS() {
+        return format("@this.owner;: source=@this.source;, intersection=@this.intersection;, distance=@this.distance;");
     }
 }
